@@ -1,0 +1,28 @@
+{
+  "placeholderImages": [
+    {
+      "id": "llama-3-1",
+      "description": "Llama 3.1 Model Logo",
+      "imageUrl": "https://picsum.photos/seed/llama/200/200",
+      "imageHint": "AI model logo"
+    },
+    {
+      "id": "mistral",
+      "description": "Mistral Model Logo",
+      "imageUrl": "https://picsum.photos/seed/mistral/200/200",
+      "imageHint": "minimalist abstract logo"
+    },
+    {
+      "id": "gemma",
+      "description": "Gemma Model Logo",
+      "imageUrl": "https://picsum.photos/seed/gemma/200/200",
+      "imageHint": "geometric abstract shape"
+    },
+    {
+      "id": "phi-3",
+      "description": "Phi-3 Model Logo",
+      "imageUrl": "https://picsum.photos/seed/phi/200/200",
+      "imageHint": "clean circular logo"
+    }
+  ]
+}
