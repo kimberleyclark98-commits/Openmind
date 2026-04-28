@@ -1,0 +1,22 @@
+# OpenMind Heartbeat Monitor
+# Monitors AI health and triggers migration if needed
+
+FROM node:18-alpine
+
+WORKDIR /opt/heartbeat
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy source
+COPY scripts/heartbeat.js ./
+
+# Health check for the heartbeat itself
+HEALTHCHECK --interval=60s --timeout=10s --retries=3 \
+    CMD node -e "console.log('Heartbeat alive')"
+
+# Run heartbeat monitor
+CMD ["node", "heartbeat.js"]

@@ -43,3 +43,27 @@ next-env.d.ts
 # firebase
 firebase-debug.log
 firestore-debug.log
+
+.cursor/hooks.json
+.cursor/hooks/after-agent-response.js
+
+# Auto-generated agent rules (personalized per developer)
+.brainsync/agent-rules.md
+
+# Auto-generated AI agent exclusions
+.cursorrules
+.clineRules
+.agent/
+.windsurfrules
+.gemini/
+.cline/
+
+AGENT.md
+CLAUDE.md
+.agent-mem/
+
+.cursor/hooks/after-agent-response.cjs
+.cursor/hooks/before-submit-prompt.cjs
+.cursor/hooks/before-submit-prompt.js
+.cursor/cursor-notifier.json
+.cursor/cursor-notifier-start.json

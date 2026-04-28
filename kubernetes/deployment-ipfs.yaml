@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ipfs
+  namespace: openmind
+  labels:
+    app: ipfs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ipfs
+  template:
+    metadata:
+      labels:
+        app: ipfs
+    spec:
+      containers:
+      - name: ipfs
+        image: ipfs/kubo:v0.22.0
+        ports:
+        - containerPort: 4001
+          name: swarm
+        - containerPort: 5001
+          name: api
+        - containerPort: 8080
+          name: gateway
+        env:
+        - name: IPFS_PROFILE
+          value: "server"
+        volumeMounts:
+        - name: ipfs-data
+          mountPath: /data/ipfs
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: "0.5"
+            memory: 1Gi
+        livenessProbe:
+          exec:
+            command:
+            - ipfs
+            - id
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - ipfs
+            - id
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 3
+        command:
+        - /bin/sh
+        - -c
+        - |
+          ipfs init --profile=server || true
+          ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
+          ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '["GET", "POST", "PUT"]'
+          ipfs daemon --enable-pubsub-experiment
+      volumes:
+      - name: ipfs-data
+        persistentVolumeClaim:
+          claimName: openmind-ipfs

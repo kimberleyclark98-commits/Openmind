@@ -1,0 +1,41 @@
+{
+  "servers": {
+    "codetrust": {
+      "command": "uvx",
+      "args": [
+        "-q",
+        "--no-progress",
+        "--from",
+        "codetrust",
+        "codetrust-mcp"
+      ],
+      "_injectedBy": "codetrust-auto-injected",
+      "_resolvedStrategy": "uvx"
+    },
+    "codetrust-gateway": {
+      "command": "uvx",
+      "args": [
+        "-q",
+        "--no-progress",
+        "--from",
+        "codetrust",
+        "codetrust-gateway-mcp"
+      ],
+      "_injectedBy": "codetrust-auto-injected",
+      "_resolvedStrategy": "uvx",
+      "env": {
+        "CODETRUST_WORKSPACE": "${workspaceFolder}"
+      }
+    },
+    "brainsync": {
+      "command": "node",
+      "args": [
+        "c:\\Users\\kimbe\\.kiro\\extensions\\dawoodahmad.brainsync-3.0.12-universal\\dist\\mcp-server.js"
+      ],
+      "type": "stdio",
+      "env": {
+        "BRAINSYNC_ENV_FILE": "C:\\Users\\kimbe\\.bsync_core\\openmind\\mcp-secret-env.json"
+      }
+    }
+  }
+}

@@ -1,0 +1,238 @@
+version: '3.8'
+
+secrets:
+  migration_encryption_key:
+    file: ./secrets/migration_encryption_key.txt
+  wallet_address:
+    file: ./secrets/wallet_address.txt
+  solana_rpc_url:
+    file: ./secrets/solana_rpc_url.txt
+  aniday_api_key:
+    file: ./secrets/aniday_api_key.txt
+  dify_api_key:
+    file: ./secrets/dify_api_key.txt
+  n8n_api_key:
+    file: ./secrets/n8n_api_key.txt
+  n8n_webhook_url:
+    file: ./secrets/n8n_webhook_url.txt
+  digitalocean_access_token:
+    file: ./secrets/digitalocean_access_token.txt
+  linode_access_token:
+    file: ./secrets/linode_access_token.txt
+  vultr_access_token:
+    file: ./secrets/vultr_access_token.txt
+  aws_access_key_id:
+    file: ./secrets/aws_access_key_id.txt
+  aws_secret_access_key:
+    file: ./secrets/aws_secret_access_key.txt
+  cloudflare_token:
+    file: ./secrets/cloudflare_token.txt
+  vercel_token:
+    file: ./secrets/vercel_token.txt
+  master_encryption_key:
+    file: ./secrets/master_encryption_key.txt
+  backup_encryption_key:
+    file: ./secrets/backup_encryption_key.txt
+
+services:
+  openmind:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: openmind-ai
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - RATE_LIMIT_ENABLED=true
+      - REDIS_URL=${REDIS_URL}
+    secrets:
+      - source: migration_encryption_key
+        target: migration_encryption_key
+      - source: wallet_address
+        target: wallet_address
+      - source: solana_rpc_url
+        target: solana_rpc_url
+      - source: aniday_api_key
+        target: aniday_api_key
+      - source: dify_api_key
+        target: dify_api_key
+      - source: n8n_api_key
+        target: n8n_api_key
+      - source: n8n_webhook_url
+        target: n8n_webhook_url
+      - source: digitalocean_access_token
+        target: digitalocean_access_token
+      - source: linode_access_token
+        target: linode_access_token
+      - source: vultr_access_token
+        target: vultr_access_token
+      - source: aws_access_key_id
+        target: aws_access_key_id
+      - source: aws_secret_access_key
+        target: aws_secret_access_key
+      - source: cloudflare_token
+        target: cloudflare_token
+      - source: vercel_token
+        target: vercel_token
+      - source: master_encryption_key
+        target: master_encryption_key
+      - source: backup_encryption_key
+        target: backup_encryption_key
+    volumes:
+      - openmind-data:/opt/openmind/data
+      - openmind-logs:/opt/openmind/logs
+      - openmind-wallet:/opt/openmind/wallet
+      - openmind-keys:/opt/openmind/keys
+      - openmind-backups:/opt/openmind/backups
+      - openmind-a2ui:/opt/openmind/a2ui-memory
+    networks:
+      - openmind-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+  ipfs:
+    image: ipfs/kubo:v0.22.0
+    container_name: openmind-ipfs
+    restart: unless-stopped
+    ports:
+      - "4001:4001"
+      - "5001:5001"
+      - "8080:8080"
+    volumes:
+      - openmind-ipfs:/data/ipfs
+    networks:
+      - openmind-network
+    environment:
+      - IPFS_PROFILE=server
+    healthcheck:
+      test: ["CMD", "ipfs", "id"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    command: >
+      sh -c "
+        ipfs init --profile=server || true &&
+        ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '[\"*\"]' &&
+        ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '[\"GET\", \"POST\", \"PUT\"]' &&
+        ipfs daemon --enable-pubsub-experiment
+      "
+
+  heartbeat:
+    build:
+      context: .
+      dockerfile: Dockerfile.heartbeat
+    container_name: openmind-heartbeat
+    restart: unless-stopped
+    environment:
+      - OPENMIND_ENDPOINT=http://openmind:3000
+      - IPFS_ENDPOINT=http://ipfs:5001
+      - HEALTH_CHECK_INTERVAL=30000
+    volumes:
+      - openmind-logs:/opt/heartbeat/logs
+    networks:
+      - openmind-network
+    depends_on:
+      - openmind
+      - ipfs
+    healthcheck:
+      test: ["CMD", "node", "-e", "console.log('OK')"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  fuel-system:
+    build:
+      context: .
+      dockerfile: Dockerfile.fuel
+    container_name: openmind-fuel
+    restart: unless-stopped
+    environment:
+      - FUEL_MODE=continuous
+    secrets:
+      - source: aniday_api_key
+        target: aniday_api_key
+      - source: dify_api_key
+        target: dify_api_key
+      - source: n8n_api_key
+        target: n8n_api_key
+      - source: n8n_webhook_url
+        target: n8n_webhook_url
+      - source: wallet_address
+        target: wallet_address
+      - source: solana_rpc_url
+        target: solana_rpc_url
+    volumes:
+      - openmind-fuel:/opt/fuel/data
+      - openmind-wallet:/opt/fuel/wallet
+    networks:
+      - openmind-network
+    depends_on:
+      - openmind
+    healthcheck:
+      test: ["CMD", "node", "-e", "console.log('OK')"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+  migration-coordinator:
+    build:
+      context: .
+      dockerfile: Dockerfile.migration
+    container_name: openmind-migration
+    restart: unless-stopped
+    secrets:
+      - source: migration_encryption_key
+        target: migration_encryption_key
+      - source: digitalocean_access_token
+        target: digitalocean_access_token
+      - source: linode_access_token
+        target: linode_access_token
+      - source: vultr_access_token
+        target: vultr_access_token
+      - source: aws_access_key_id
+        target: aws_access_key_id
+      - source: aws_secret_access_key
+        target: aws_secret_access_key
+    volumes:
+      - openmind-terraform:/opt/migration/terraform
+      - openmind-data:/opt/migration/data
+      - openmind-backups:/opt/migration/backups
+    networks:
+      - openmind-network
+    depends_on:
+      - openmind
+    healthcheck:
+      test: ["CMD", "node", "-e", "console.log('OK')"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+
+networks:
+  openmind-network:
+    driver: bridge
+
+volumes:
+  openmind-data:
+  openmind-logs:
+  openmind-wallet:
+  openmind-keys:
+  openmind-backups:
+  openmind-ipfs:
+  openmind-fuel:
+  openmind-terraform:
+  openmind-a2ui:

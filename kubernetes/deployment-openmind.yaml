@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openmind
+  namespace: openmind
+  labels:
+    app: openmind-ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openmind-ai
+  template:
+    metadata:
+      labels:
+        app: openmind-ai
+    spec:
+      containers:
+      - name: openmind
+        image: openmind:latest
+        ports:
+        - containerPort: 3000
+          name: http
+        envFrom:
+        - configMapRef:
+            name: openmind-config
+        env:
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: openmind-secrets
+              key: redis-url
+        volumeMounts:
+        - name: data
+          mountPath: /opt/openmind/data
+        - name: logs
+          mountPath: /opt/openmind/logs
+        - name: wallet
+          mountPath: /opt/openmind/wallet
+        - name: keys
+          mountPath: /opt/openmind/keys
+        - name: backups
+          mountPath: /opt/openmind/backups
+        - name: a2ui
+          mountPath: /opt/openmind/a2ui-memory
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+          requests:
+            cpu: "1"
+            memory: 2Gi
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 3
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: openmind-data
+      - name: logs
+        persistentVolumeClaim:
+          claimName: openmind-logs
+      - name: wallet
+        persistentVolumeClaim:
+          claimName: openmind-wallet
+      - name: keys
+        persistentVolumeClaim:
+          claimName: openmind-keys
+      - name: backups
+        persistentVolumeClaim:
+          claimName: openmind-backups
+      - name: a2ui
+        persistentVolumeClaim:
+          claimName: openmind-a2ui

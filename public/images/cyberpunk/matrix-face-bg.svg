@@ -1,0 +1,138 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="matrixGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#000000;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#001100;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#000000;stop-opacity:1" />
+    </linearGradient>
+    <filter id="matrixGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#matrixGradient)"/>
+
+  <!-- Matrix code columns -->
+  <g opacity="0.8" font-family="monospace" font-size="12" fill="#00ff00">
+    <!-- Column 1 -->
+    <text x="50" y="50">01010101</text>
+    <text x="50" y="70">10101010</text>
+    <text x="50" y="90">01010101</text>
+    <text x="50" y="110">11110000</text>
+    <text x="50" y="130">00001111</text>
+    <text x="50" y="150">10101010</text>
+    <text x="50" y="170">01010101</text>
+    <text x="50" y="190">11111111</text>
+    <text x="50" y="210">00000000</text>
+    <text x="50" y="230">10101010</text>
+    <text x="50" y="250">01010101</text>
+    <text x="50" y="270">11110000</text>
+    <text x="50" y="290">00001111</text>
+    <text x="50" y="310">10101010</text>
+    <text x="50" y="330">01010101</text>
+    <text x="50" y="350">11111111</text>
+
+    <!-- Column 2 -->
+    <text x="100" y="30">01010101</text>
+    <text x="100" y="50">10101010</text>
+    <text x="100" y="70">01010101</text>
+    <text x="100" y="90">11110000</text>
+    <text x="100" y="110">00001111</text>
+    <text x="100" y="130">10101010</text>
+    <text x="100" y="150">01010101</text>
+    <text x="100" y="170">11111111</text>
+    <text x="100" y="190">00000000</text>
+    <text x="100" y="210">10101010</text>
+    <text x="100" y="230">01010101</text>
+    <text x="100" y="250">11110000</text>
+    <text x="100" y="270">00001111</text>
+    <text x="100" y="290">10101010</text>
+    <text x="100" y="310">01010101</text>
+    <text x="100" y="330">11111111</text>
+
+    <!-- Column 3 -->
+    <text x="150" y="40">01010101</text>
+    <text x="150" y="60">10101010</text>
+    <text x="150" y="80">01010101</text>
+    <text x="150" y="100">11110000</text>
+    <text x="150" y="120">00001111</text>
+    <text x="150" y="140">10101010</text>
+    <text x="150" y="160">01010101</text>
+    <text x="150" y="180">11111111</text>
+    <text x="150" y="200">00000000</text>
+    <text x="150" y="220">10101010</text>
+    <text x="150" y="240">01010101</text>
+    <text x="150" y="260">11110000</text>
+    <text x="150" y="280">00001111</text>
+    <text x="150" y="300">10101010</text>
+    <text x="150" y="320">01010101</text>
+    <text x="150" y="340">11111111</text>
+
+    <!-- Add more columns across the width -->
+    <text x="200" y="20">01010101</text>
+    <text x="200" y="40">10101010</text>
+    <text x="200" y="60">01010101</text>
+    <text x="200" y="80">11110000</text>
+    <text x="200" y="100">00001111</text>
+    <text x="200" y="120">10101010</text>
+    <text x="200" y="140">01010101</text>
+    <text x="200" y="160">11111111</text>
+    <text x="200" y="180">00000000</text>
+    <text x="200" y="200">10101010</text>
+    <text x="200" y="220">01010101</text>
+    <text x="200" y="240">11110000</text>
+    <text x="200" y="260">00001111</text>
+    <text x="200" y="280">10101010</text>
+    <text x="200" y="300">01010101</text>
+    <text x="200" y="320">11111111</text>
+    <text x="200" y="340">00000000</text>
+    <text x="200" y="360">10101010</text>
+
+    <!-- Continue with more columns for full coverage -->
+    <text x="250" y="10">01010101</text>
+    <text x="250" y="30">10101010</text>
+    <text x="250" y="50">01010101</text>
+    <text x="250" y="70">11110000</text>
+    <text x="250" y="90">00001111</text>
+    <text x="250" y="110">10101010</text>
+    <text x="250" y="130">01010101</text>
+    <text x="250" y="150">11111111</text>
+    <text x="250" y="170">00000000</text>
+    <text x="250" y="190">10101010</text>
+    <text x="250" y="210">01010101</text>
+    <text x="250" y="230">11110000</text>
+    <text x="250" y="250">00001111</text>
+    <text x="250" y="270">10101010</text>
+    <text x="250" y="290">01010101</text>
+    <text x="250" y="310">11111111</text>
+    <text x="250" y="330">00000000</text>
+    <text x="250" y="350">10101010</text>
+    <text x="250" y="370">01010101</text>
+  </g>
+
+  <!-- Central face silhouette (subtle) -->
+  <g opacity="0.3">
+    <ellipse cx="400" cy="300" rx="120" ry="150" fill="#001100"/>
+    <ellipse cx="400" cy="270" rx="100" ry="120" fill="#002200"/>
+    <!-- Eyes -->
+    <circle cx="370" cy="250" r="8" fill="#00ff00"/>
+    <circle cx="430" cy="250" r="8" fill="#00ff00"/>
+    <!-- Mouth -->
+    <path d="M 370 320 Q 400 340 430 320" stroke="#00ff00" stroke-width="2" fill="none"/>
+  </g>
+
+  <!-- Animated falling effect hint -->
+  <animateTransform
+    attributeName="transform"
+    attributeType="XML"
+    type="translate"
+    values="0,0;0,10;0,0"
+    dur="3s"
+    repeatCount="indefinite"
+  />
+</svg>

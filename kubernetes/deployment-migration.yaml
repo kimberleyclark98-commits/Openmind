@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: migration-coordinator
+  namespace: openmind
+  labels:
+    app: migration-coordinator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: migration-coordinator
+  template:
+    metadata:
+      labels:
+        app: migration-coordinator
+    spec:
+      containers:
+      - name: migration-coordinator
+        image: openmind-migration:latest
+        volumeMounts:
+        - name: terraform
+          mountPath: /opt/migration/terraform
+        - name: data
+          mountPath: /opt/migration/data
+        - name: backups
+          mountPath: /opt/migration/backups
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: "0.5"
+            memory: 512Mi
+        livenessProbe:
+          exec:
+            command:
+            - node
+            - -e
+            - console.log('OK')
+          initialDelaySeconds: 30
+          periodSeconds: 60
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - node
+            - -e
+            - console.log('OK')
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+      volumes:
+      - name: terraform
+        persistentVolumeClaim:
+          claimName: openmind-terraform
+      - name: data
+        persistentVolumeClaim:
+          claimName: openmind-data
+      - name: backups
+        persistentVolumeClaim:
+          claimName: openmind-backups

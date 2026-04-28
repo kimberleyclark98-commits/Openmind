@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "brainsync": {
+      "command": "node",
+      "args": [
+        "c:\\Users\\kimbe\\.kiro\\extensions\\dawoodahmad.brainsync-3.0.12-universal\\dist\\mcp-server.js"
+      ],
+      "env": {
+        "BRAINSYNC_ENV_FILE": "C:\\Users\\kimbe\\.bsync_core\\openmind\\mcp-secret-env.json"
+      }
+    }
+  }
+}

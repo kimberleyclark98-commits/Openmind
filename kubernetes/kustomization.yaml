@@ -1,0 +1,61 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: openmind
+
+namespace: openmind
+
+resources:
+  - namespace.yaml
+  - secrets.yaml
+  - configmap.yaml
+  - pvcs.yaml
+  - deployment-openmind.yaml
+  - deployment-ipfs.yaml
+  - deployment-heartbeat.yaml
+  - deployment-fuel.yaml
+  - deployment-migration.yaml
+  - services.yaml
+  - ingress.yaml
+
+images:
+  - name: openmind
+    newTag: latest
+  - name: openmind-heartbeat
+    newTag: latest
+  - name: openmind-fuel
+    newTag: latest
+  - name: openmind-migration
+    newTag: latest
+
+configMapGenerator:
+  - name: openmind-config
+    literals:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - RATE_LIMIT_ENABLED=true
+      - FUEL_MODE=continuous
+      - OPENMIND_ENDPOINT=http://openmind.openmind.svc.cluster.local:3000
+      - IPFS_ENDPOINT=http://ipfs.openmind.svc.cluster.local:5001
+      - HEALTH_CHECK_INTERVAL=30000
+
+secretGenerator:
+  - name: openmind-secrets
+    literals:
+      - migration-encryption-key=YOUR_MIGRATION_KEY_HERE
+      - wallet-address=YOUR_WALLET_ADDRESS_HERE
+      - solana-rpc-url=YOUR_SOLANA_RPC_URL_HERE
+      - aniday-api-key=YOUR_ANIDAY_API_KEY_HERE
+      - dify-api-key=YOUR_DIFY_API_KEY_HERE
+      - n8n-api-key=YOUR_N8N_API_KEY_HERE
+      - n8n-webhook-url=YOUR_N8N_WEBHOOK_URL_HERE
+      - digitalocean-access-token=YOUR_DO_TOKEN_HERE
+      - linode-access-token=YOUR_LINODE_TOKEN_HERE
+      - vultr-access-token=YOUR_VULTR_TOKEN_HERE
+      - aws-access-key-id=YOUR_AWS_KEY_ID_HERE
+      - aws-secret-access-key=YOUR_AWS_SECRET_KEY_HERE
+      - cloudflare-token=YOUR_CLOUDFLARE_TOKEN_HERE
+      - vercel-token=YOUR_VERCEL_TOKEN_HERE
+      - master-encryption-key=YOUR_MASTER_KEY_HERE
+      - backup-encryption-key=YOUR_BACKUP_KEY_HERE

@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openmind-ingress
+  namespace: openmind
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - openmind.yourdomain.com
+    secretName: openmind-tls
+  rules:
+  - host: openmind.yourdomain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: openmind
+            port:
+              number: 3000
+      - path: /ipfs
+        pathType: Prefix
+        backend:
+          service:
+            name: ipfs
+            port:
+              number: 8080

@@ -4,16 +4,21 @@ import { useState, useRef, useEffect } from "react";
 import { Message, Model, Conversation } from "@/types/chat";
 import { MessageBubble } from "./MessageBubble";
 import { PromptRefinementTool } from "../tools/PromptRefinementTool";
+import { A2UIRenderer } from "../a2ui/A2UIRenderer";
+import { A2UIMessage } from "@/lib/a2ui/types";
+import { a2uiDetector, a2uiParser } from "@/lib/a2ui/parser";
+import { skillRouter, SkillContext } from "@/ai/skills/skill-router";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { 
-  Send, 
-  Sparkles, 
-  Trash2, 
+import {
+  Send,
+  Sparkles,
+  Trash2,
   MoreVertical,
   ChevronDown,
   LayoutGrid,
-  History
+  History,
+  Code
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -34,6 +39,7 @@ export function ChatContainer() {
   const [input, setInput] = useState("");
   const [activeModel, setActiveModel] = useState<Model>(MOCK_MODELS[0]);
   const [isRefinerOpen, setIsRefinerOpen] = useState(false);
+  const [a2uiStream, setA2uiStream] = useState<string[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,7 +48,7 @@ export function ChatContainer() {
     }
   }, [messages]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
 
     const userMsg: Message = {
@@ -53,17 +59,62 @@ export function ChatContainer() {
     };
 
     setMessages(prev => [...prev, userMsg]);
+    const userInput = input;
     setInput("");
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMsg: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: `I am currently simulating ${activeModel.name}. As a placeholder, I can tell you that my architecture is ${activeModel.version} and I am optimized for local inference. How can I help you today?`,
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, aiMsg]);
+    // Use OpenMind skill router for intelligent response generation
+    setTimeout(async () => {
+      try {
+        const skillContext: SkillContext = {
+          userInput,
+          conversationHistory: messages.map(msg => ({
+            role: msg.role,
+            content: msg.content
+          })),
+          availableSkills: Object.keys(require('@/ai/skills/skill-router').OPENMIND_SKILLS),
+          currentModel: activeModel.name
+        };
+
+        const skillResponse = await skillRouter.route(skillContext);
+
+        let aiContent = '';
+        let newA2uiMessages: A2UIMessage[] = [];
+
+        // Process response based on format
+        if (skillResponse.format === 'a2ui' && Array.isArray(skillResponse.content)) {
+          // Convert A2UI messages to JSON strings for the new renderer
+          const streamLines = skillResponse.content.map(msg => JSON.stringify(msg));
+          setA2uiStream(streamLines);
+          aiContent = `🧠 OpenMind neural interface activated. Cyberpunk UI generated using ${skillResponse.skill} protocol.`;
+        } else if (skillResponse.format === 'mixed') {
+          // For mixed responses, assume the content is a string that may contain A2UI
+          aiContent = skillResponse.content as string;
+          // If it contains A2UI markers, we could extract them here
+        } else {
+          aiContent = skillResponse.content as string;
+        }
+
+        const aiMsg: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: aiContent,
+          timestamp: new Date(),
+        };
+
+        setMessages(prev => [...prev, aiMsg]);
+
+      } catch (error) {
+        console.error('Skill routing failed:', error);
+
+        // Fallback response
+        const aiMsg: Message = {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: '🧠 Neural pathways disrupted... System recovering. Please try again.',
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, aiMsg]);
+      }
     }, 800);
   };
 
@@ -110,25 +161,32 @@ export function ChatContainer() {
       </header>
 
       {/* Messages */}
-      <div 
+      <div
         ref={scrollRef}
         className="flex-1 overflow-y-auto px-6 py-8 scroll-smooth"
       >
         {messages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center max-w-md mx-auto space-y-4">
-            <div className="h-16 w-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
-              <Sparkles className="h-8 w-8 text-primary" />
+            <div className="h-16 w-16 bg-gradient-to-br from-cyan-500/20 to-purple-500/20 rounded-2xl flex items-center justify-center mb-4 border border-cyan-500/30">
+              <Sparkles className="h-8 w-8 text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]" />
             </div>
-            <h2 className="text-2xl font-bold tracking-tight">How can I help you?</h2>
+            <h2 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+              How can I help you?
+            </h2>
             <p className="text-muted-foreground">
-              Select a local model and start a conversation. Your data never leaves this machine.
+              Select a local model and start a conversation. I can create dynamic cyberpunk UI interfaces.
             </p>
             <div className="grid grid-cols-2 gap-2 mt-4 w-full">
-              {["Explain quantum physics", "Write a Python script", "Summarize this text", "Draft an email"].map((prompt) => (
-                <button 
+              {[
+                "Create a cyberpunk dashboard",
+                "Build a task management UI",
+                "Design a data visualization interface",
+                "Make a settings panel"
+              ].map((prompt) => (
+                <button
                   key={prompt}
                   onClick={() => setInput(prompt)}
-                  className="p-3 text-xs text-left border rounded-xl hover:bg-accent hover:border-primary/50 transition-all"
+                  className="p-3 text-xs text-left border border-cyan-500/30 rounded-xl hover:bg-cyan-500/10 hover:border-cyan-500/50 transition-all hover:shadow-[0_0_15px_rgba(34,211,238,0.3)]"
                 >
                   {prompt}
                 </button>
@@ -136,9 +194,24 @@ export function ChatContainer() {
             </div>
           </div>
         ) : (
-          <div className="max-w-4xl mx-auto w-full">
+          <div className="max-w-4xl mx-auto w-full space-y-6">
             {messages.map(msg => (
-              <MessageBubble key={msg.id} message={msg} />
+              <div key={msg.id}>
+                <MessageBubble message={msg} />
+                {/* Render A2UI interface if this message triggered UI creation */}
+                {msg.role === 'assistant' && a2uiStream.length > 0 && (
+                  <div className="mt-4 ml-16">
+                    <A2UIRenderer
+                      stream={a2uiStream}
+                      surfaceId={`surface_${msg.id}`}
+                      onInteraction={(componentId, action, data) => {
+                        console.log('A2UI Interaction recorded:', componentId, action, data);
+                        // Could add more sophisticated interaction handling here
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         )}

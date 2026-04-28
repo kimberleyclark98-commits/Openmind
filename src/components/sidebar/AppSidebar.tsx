@@ -12,25 +12,26 @@ import {
   SidebarGroupLabel,
   SidebarGroupContent
 } from "@/components/ui/sidebar";
-import { 
-  MessageSquare, 
-  Library, 
-  Settings, 
-  Search, 
+import {
+  MessageSquare,
+  Library,
+  Settings,
+  Search,
   Cloud,
   LayoutGrid,
   Zap,
   Info,
   LogOut,
   ChevronRight,
-  BrainCircuit
+  BrainCircuit,
+  BarChart3
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 interface AppSidebarProps {
-  view: 'chat' | 'library';
-  setView: (view: 'chat' | 'library') => void;
+  view: 'chat' | 'library' | 'dashboard';
+  setView: (view: 'chat' | 'library' | 'dashboard') => void;
 }
 
 export function AppSidebar({ view, setView }: AppSidebarProps) {
@@ -54,8 +55,8 @@ export function AppSidebar({ view, setView }: AppSidebarProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton 
-                  isActive={view === 'chat'} 
+                <SidebarMenuButton
+                  isActive={view === 'chat'}
                   onClick={() => setView('chat')}
                   className={cn("h-11 rounded-xl transition-all", view === 'chat' && "bg-primary/10 text-primary shadow-sm")}
                 >
@@ -64,13 +65,23 @@ export function AppSidebar({ view, setView }: AppSidebarProps) {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton 
-                  isActive={view === 'library'} 
+                <SidebarMenuButton
+                  isActive={view === 'library'}
                   onClick={() => setView('library')}
                   className={cn("h-11 rounded-xl transition-all", view === 'library' && "bg-primary/10 text-primary shadow-sm")}
                 >
                   <Library className="h-5 w-5" />
                   <span className="font-medium">Model Library</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  isActive={view === 'dashboard'}
+                  onClick={() => setView('dashboard')}
+                  className={cn("h-11 rounded-xl transition-all", view === 'dashboard' && "bg-primary/10 text-primary shadow-sm")}
+                >
+                  <BarChart3 className="h-5 w-5" />
+                  <span className="font-medium">Dashboard</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

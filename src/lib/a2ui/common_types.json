@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2ui.dev/specification/0.9/common_types.json",
+  "title": "A2UI Common Types",
+  "description": "Common type definitions for A2UI v0.9",
+  "type": "object",
+  "$defs": {
+    "Color": {
+      "description": "Color representation - supports hex, rgb, hsl, or named colors",
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^#[0-9a-fA-F]{3,8}$",
+          "description": "Hex color code"
+        },
+        {
+          "type": "string",
+          "pattern": "^rgb\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*\\)$",
+          "description": "RGB color"
+        },
+        {
+          "type": "string",
+          "pattern": "^rgba\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*[0-1](\\.\\d+)?\\s*\\)$",
+          "description": "RGBA color"
+        },
+        {
+          "type": "string",
+          "pattern": "^hsl\\(\\s*\\d+\\s*,\\s*\\d+%\\s*,\\s*\\d+%\\s*\\)$",
+          "description": "HSL color"
+        },
+        {
+          "type": "string",
+          "pattern": "^hsla\\(\\s*\\d+\\s*,\\s*\\d+%\\s*,\\s*\\d+%\\s*,\\s*[0-1](\\.\\d+)?\\s*\\)$",
+          "description": "HSLA color"
+        },
+        {
+          "type": "string",
+          "enum": ["transparent", "currentColor", "inherit"],
+          "description": "Special color values"
+        }
+      ]
+    },
+    "Size": {
+      "description": "Size representation - supports px, em, rem, %, vh, vw",
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d+)?(px|em|rem|%|vh|vw)$"
+    },
+    "Position": {
+      "description": "CSS position values",
+      "type": "string",
+      "enum": ["static", "relative", "absolute", "fixed", "sticky"]
+    },
+    "Display": {
+      "description": "CSS display values",
+      "type": "string",
+      "enum": ["block", "inline", "inline-block", "flex", "inline-flex", "grid", "inline-grid", "none"]
+    },
+    "FlexDirection": {
+      "description": "CSS flex-direction values",
+      "type": "string",
+      "enum": ["row", "row-reverse", "column", "column-reverse"]
+    },
+    "JustifyContent": {
+      "description": "CSS justify-content values",
+      "type": "string",
+      "enum": ["flex-start", "flex-end", "center", "space-between", "space-around", "space-evenly"]
+    },
+    "AlignItems": {
+      "description": "CSS align-items values",
+      "type": "string",
+      "enum": ["stretch", "flex-start", "flex-end", "center", "baseline"]
+    },
+    "TextAlign": {
+      "description": "CSS text-align values",
+      "type": "string",
+      "enum": ["left", "right", "center", "justify"]
+    },
+    "FontWeight": {
+      "description": "CSS font-weight values",
+      "type": "string",
+      "enum": ["normal", "bold", "lighter", "bolder", "100", "200", "300", "400", "500", "600", "700", "800", "900"]
+    },
+    "BorderStyle": {
+      "description": "CSS border-style values",
+      "type": "string",
+      "enum": ["none", "solid", "dashed", "dotted", "double", "groove", "ridge", "inset", "outset"]
+    },
+    "EventHandler": {
+      "description": "Function to handle component events",
+      "type": "string",
+      "description": "JavaScript function as string or action ID"
+    },
+    "DataBinding": {
+      "description": "Data binding expression",
+      "type": "string",
+      "description": "Expression to bind component to data model"
+    },
+    "ComponentId": {
+      "description": "Unique component identifier",
+      "type": "string",
+      "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"
+    },
+    "ActionId": {
+      "description": "Unique action identifier",
+      "type": "string",
+      "pattern": "^[a-zA-Z_][a-zA-Z0-9_]*$"
+    }
+  }
+}

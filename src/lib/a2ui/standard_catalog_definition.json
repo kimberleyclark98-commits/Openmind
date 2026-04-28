@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a2ui.dev/specification/0.9/standard_catalog_definition.json",
+  "title": "A2UI Standard Component Catalog",
+  "description": "Standard component catalog for A2UI v0.9",
+  "type": "object",
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Catalog version"
+    },
+    "components": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-zA-Z][a-zA-Z0-9_]*$": {
+          "$ref": "#/$defs/ComponentDefinition"
+        }
+      },
+      "description": "Map of component types to their definitions"
+    }
+  },
+  "required": ["version", "components"],
+  "$defs": {
+    "ComponentDefinition": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the component"
+        },
+        "properties": {
+          "type": "object",
+          "description": "Schema for component properties",
+          "additionalProperties": true
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of events this component can emit"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["layout", "input", "display", "navigation", "feedback", "media", "chart", "custom"],
+          "description": "Component category for organization"
+        }
+      },
+      "required": ["description", "properties", "events", "category"]
+    }
+  }
+}

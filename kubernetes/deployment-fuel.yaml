@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fuel-system
+  namespace: openmind
+  labels:
+    app: fuel-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fuel-system
+  template:
+    metadata:
+      labels:
+        app: fuel-system
+    spec:
+      containers:
+      - name: fuel-system
+        image: openmind-fuel:latest
+        envFrom:
+        - configMapRef:
+            name: openmind-config
+        volumeMounts:
+        - name: fuel-data
+          mountPath: /opt/fuel/data
+        - name: wallet
+          mountPath: /opt/fuel/wallet
+        resources:
+          limits:
+            cpu: "1"
+            memory: 1Gi
+          requests:
+            cpu: "0.5"
+            memory: 512Mi
+        livenessProbe:
+          exec:
+            command:
+            - node
+            - -e
+            - console.log('OK')
+          initialDelaySeconds: 30
+          periodSeconds: 60
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - node
+            - -e
+            - console.log('OK')
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+      volumes:
+      - name: fuel-data
+        persistentVolumeClaim:
+          claimName: openmind-fuel
+      - name: wallet
+        persistentVolumeClaim:
+          claimName: openmind-wallet

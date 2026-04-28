@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heartbeat
+  namespace: openmind
+  labels:
+    app: heartbeat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: heartbeat
+  template:
+    metadata:
+      labels:
+        app: heartbeat
+    spec:
+      containers:
+      - name: heartbeat
+        image: openmind-heartbeat:latest
+        envFrom:
+        - configMapRef:
+            name: openmind-config
+        volumeMounts:
+        - name: logs
+          mountPath: /opt/heartbeat/logs
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: 512Mi
+          requests:
+            cpu: "0.1"
+            memory: 256Mi
+        livenessProbe:
+          exec:
+            command:
+            - node
+            - -e
+            - console.log('OK')
+          initialDelaySeconds: 30
+          periodSeconds: 60
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command:
+            - node
+            - -e
+            - console.log('OK')
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+      volumes:
+      - name: logs
+        persistentVolumeClaim:
+          claimName: openmind-logs

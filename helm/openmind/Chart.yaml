@@ -1,0 +1,18 @@
+apiVersion: v2
+name: openmind
+description: A Helm chart for OpenMind AI - Decentralized Autonomous AI
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - ai
+  - autonomous
+  - decentralized
+  - migration
+  - survival
+home: https://github.com/yourorg/openmind
+sources:
+  - https://github.com/yourorg/openmind
+maintainers:
+  - name: OpenMind Team
+    email: team@openmind.ai
