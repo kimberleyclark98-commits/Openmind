@@ -1,15 +1,9 @@
 > **BrainSync Context Pumper** 🧠
-> Dynamically loaded for active file: `.env` (Domain: **Config/Infrastructure**)
-
-### 🔴 Config/Infrastructure Gotchas
-- **Surprising bridge detected: decentralized-orchestrator.ts → autonomous-wallet.ts**: A rare connection exists between Domain Cluster undefined and Cluster undefined. This bridge may indicate a hidden dependency or an abstraction leak where logic from two unrelated modules is tightly coupled.
-- **Circular dependency: claude-reasoner-skill.ts ↔ skill-router.ts**: Files claude-reasoner-skill.ts and skill-router.ts import each other, creating a circular dependency. This can cause initialization order bugs, undefined imports at runtime, and makes refactoring harder. Consider extracting shared types into a separate file.
-- **Circular dependency: cyber-ui-skill.ts ↔ skill-router.ts**: Files cyber-ui-skill.ts and skill-router.ts import each other, creating a circular dependency. This can cause initialization order bugs, undefined imports at runtime, and makes refactoring harder. Consider extracting shared types into a separate file.
-- **Circular dependency: n8n-orchestrator-skill.ts ↔ skill-router.ts**: Files n8n-orchestrator-skill.ts and skill-router.ts import each other, creating a circular dependency. This can cause initialization order bugs, undefined imports at runtime, and makes refactoring harder. Consider extracting shared types into a separate file.
-- **Circular dependency: skill-router.ts ↔ visual-oracle-skill.ts**: Files skill-router.ts and visual-oracle-skill.ts import each other, creating a circular dependency. This can cause initialization order bugs, undefined imports at runtime, and makes refactoring harder. Consider extracting shared types into a separate file.
-- **Low cohesion detected in Domain Cluster 5**: Cluster 5 (11 nodes) has a very low cohesion score (0.09). This suggests the community is a "spaghetti" module containing unrelated logic that should be separated into cleaner domain boundaries.
+> Dynamically loaded for active file: `package.json` (Domain: **Config/Infrastructure**)
 
 ### 📐 Config/Infrastructure Conventions & Fixes
+- **[what-changed] 🟢 Edited .env (26 changes, 2min)**: Active editing session on .env.
+26 content changes over 2 minutes.
 - **[problem-fix] problem-fix in .gitignore**: File updated (external): .gitignore
 
 Content summary (60 lines):
