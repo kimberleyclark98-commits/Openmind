@@ -110,16 +110,27 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-950 text-white">
+    <div className="flex flex-col h-screen text-white relative" style={{ backgroundColor: '#000' }}>
+      {/* Background image */}
+      <div
+        className="fixed inset-0 z-0"
+        style={{
+          backgroundImage: 'url(/images/matrix-face.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          opacity: 0.35,
+        }}
+      />
       {/* Header */}
-      <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-800 bg-gray-900">
+      <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-800 bg-black/60 backdrop-blur-sm relative z-10">
         <div className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
         <h1 className="text-lg font-semibold text-white">OpenMind AI</h1>
         <span className="text-xs text-gray-500 ml-auto">Powered by Gemini</span>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
+      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 relative z-10">
         {messages.map((msg, i) => (
           <div
             key={i}
@@ -157,7 +168,7 @@ export default function ChatPage() {
       </div>
 
       {/* Input */}
-      <div className="px-4 py-4 border-t border-gray-800 bg-gray-900">
+      <div className="px-4 py-4 border-t border-gray-800 bg-black/60 backdrop-blur-sm relative z-10">
         <div className="flex gap-3 items-end max-w-4xl mx-auto">
           <textarea
             ref={inputRef}

@@ -35,6 +35,12 @@ export class ConversationMemory {
       ...conversation
     };
 
+    // Add basic sentiment analysis
+    entry.metadata = {
+      ...entry.metadata,
+      sentiment: this.analyzeSentiment(entry.userMessage + ' ' + entry.aiResponse)
+    };
+
     this.conversations.set(id, entry);
 
     // Keep only recent conversations
@@ -157,6 +163,33 @@ export class ConversationMemory {
       sentimentTrend,
       userPreferences
     };
+  }
+
+  /**
+   * Basic sentiment analysis (-1 to 1)
+   */
+  private analyzeSentiment(text: string): number {
+    const positiveWords = new Set([
+      'good', 'great', 'excellent', 'amazing', 'wonderful', 'fantastic', 'awesome',
+      'love', 'like', 'happy', 'pleased', 'satisfied', 'helpful', 'useful',
+      'tốt', 'hay', 'tuyệt', 'tuyệt vời', 'thích', 'vui', 'hạnh phúc'
+    ]);
+
+    const negativeWords = new Set([
+      'bad', 'terrible', 'awful', 'horrible', 'worst', 'hate', 'dislike', 'sad',
+      'angry', 'frustrated', 'useless', 'unhelpful', 'disappointed',
+      'tệ', 'xấu', 'ghét', 'buồn', 'tức', 'thất vọng', 'không tốt'
+    ]);
+
+    const words = text.toLowerCase().split(/\s+/);
+    let score = 0;
+
+    words.forEach(word => {
+      if (positiveWords.has(word)) score += 0.1;
+      if (negativeWords.has(word)) score -= 0.1;
+    });
+
+    return Math.max(-1, Math.min(1, score));
   }
 
   private async loadConversations(): Promise<void> {
